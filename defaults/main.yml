@@ -1,6 +1,6 @@
 ---
 zookeeper_version: 3.4.14
-zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{zookeeper_version}}/zookeeper-{{zookeeper_version}}.tar.gz
+zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/zookeeper-{{ zookeeper_version }}.tar.gz
 
 client_port: 2181
 init_limit: 5
@@ -21,8 +21,8 @@ zookeeper_tarball_dir: /opt/src
 zookeeper_rolling_log_file_max_size: 10MB
 zookeeper_max_rolling_log_file_count: 10
 
-zookeeper_hosts_hostname: "{{inventory_hostname}}"
+zookeeper_hosts_hostname: "{{ inventory_hostname }}"
 # List of dict (i.e. {zookeeper_hosts:[{host:,id:},{host:,id:},...]})
 zookeeper_hosts:
-  - host: "{{zookeeper_hosts_hostname}}" # the machine running
+  - host: "{{ zookeeper_hosts_hostname }}" # the machine running
     id: 1

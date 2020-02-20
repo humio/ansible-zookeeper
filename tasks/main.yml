@@ -1,19 +1,19 @@
 ---
-- name: Ensure the tarball dir exists at {{zookeeper_tarball_dir}}
+- name: Ensure the tarball dir exists at {{ zookeeper_tarball_dir }}
   file:
-    path: "{{zookeeper_tarball_dir}}"
+    path: "{{ zookeeper_tarball_dir }}"
     state: directory
 
-- name: Ensure the ZooKeeper dir exists at {{zookeeper_dir}}
+- name: Ensure the ZooKeeper dir exists at {{ zookeeper_dir }}
   file:
-    path: "{{zookeeper_dir}}"
+    path: "{{ zookeeper_dir }}"
     state: directory
 
 - name: Download ZooKeeper version
   tags: bootstrap
   get_url:
-    url: "{{zookeeper_url}}"
-    dest: "{{zookeeper_tarball_dir}}/zookeeper-{{zookeeper_version}}.tar.gz"
+    url: "{{ zookeeper_url }}"
+    dest: "{{ zookeeper_tarball_dir }}/zookeeper-{{ zookeeper_version }}.tar.gz"
 
 - name: Create ZooKeeper group
   group:
@@ -29,11 +29,11 @@
 - name: Unarchive tarball
   tags: bootstrap
   unarchive:
-    src: "{{zookeeper_tarball_dir}}/zookeeper-{{zookeeper_version}}.tar.gz"
-    dest: "{{zookeeper_dir}}/"
+    src: "{{ zookeeper_tarball_dir }}/zookeeper-{{ zookeeper_version }}.tar.gz"
+    dest: "{{ zookeeper_dir }}/"
     owner: zookeeper
     group: zookeeper
-    creates: "{{zookeeper_dir}}/bin"
+    creates: "{{ zookeeper_dir }}/bin"
     remote_src: yes
     extra_opts:
     - --strip-components=1
@@ -41,7 +41,7 @@
 - name: Change ownership on ZooKeeper directory
   tags: bootstrap
   file:
-    path: "{{zookeeper_dir}}"
+    path: "{{ zookeeper_dir }}"
     state: directory
     owner: zookeeper
     group: zookeeper
@@ -62,7 +62,7 @@
   tags: deploy
   template:
     src: myid.j2
-    dest: "{{zookeeper_data_dir}}/myid"
+    dest: "{{ zookeeper_data_dir }}/myid"
     owner: zookeeper
     group: zookeeper
     force: yes

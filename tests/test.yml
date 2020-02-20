@@ -17,7 +17,7 @@
   roles:
     - role: role_under_test
       zookeeper_hosts:
-        - host: "{{zookeeper_hosts_hostname}}" # the machine running
+        - host: "{{ zookeeper_hosts_hostname }}" # the machine running
           id: 2
 
 - hosts: localhost
@@ -39,7 +39,7 @@
   roles:
     - role: role_under_test
       zookeeper_hosts:
-        - "{{zookeeper_hosts_hostname}}"
+        - "{{ zookeeper_hosts_hostname }}"
 
 - hosts: localhost
   connection: local
@@ -60,9 +60,9 @@
   roles:
     - role: role_under_test
       zookeeper_version: 3.4.12
-      zookeeper_dir: /opt/zookeeper-{{zookeeper_version}}
+      zookeeper_dir: /opt/zookeeper-{{ zookeeper_version }}
       zookeeper_hosts:
-        - host: "{{zookeeper_hosts_hostname}}" # the machine running
+        - host: "{{ zookeeper_hosts_hostname }}" # the machine running
           ip: '192.168.0.1'
           id: 2
 
@@ -71,7 +71,7 @@
   remote_user: root
   vars:
     zookeeper_version: 3.4.12
-    zookeeper_dir: /opt/zookeeper-{{zookeeper_version}}
+    zookeeper_dir: /opt/zookeeper-{{ zookeeper_version }}
     zookeeper_cluster_ports: "2888:3888"
   tasks:
     # Expecting myid to be 2 as defined in zookeeper_hosts variable
@@ -83,4 +83,3 @@
     - shell: "grep 'server.2=192.168.0.1:{{ zookeeper_cluster_ports }}' {{ zookeeper_dir }}/conf/zoo.cfg"
       register: status
       failed_when: status.rc != 0
-
