@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: zookeeper
   author: Joel Watson
   description: Zookeeper role specifically designed for Humio
   company: Humio
