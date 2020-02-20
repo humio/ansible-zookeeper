@@ -1,0 +1,102 @@
+---
+- name: Ensure the tarball dir exists at {{zookeeper_tarball_dir}}
+  file:
+    path: "{{zookeeper_tarball_dir}}"
+    state: directory
+
+- name: Ensure the ZooKeeper dir exists at {{zookeeper_dir}}
+  file:
+    path: "{{zookeeper_dir}}"
+    state: directory
+
+- name: Download ZooKeeper version
+  tags: bootstrap
+  get_url:
+    url: "{{zookeeper_url}}"
+    dest: "{{zookeeper_tarball_dir}}/zookeeper-{{zookeeper_version}}.tar.gz"
+
+- name: Create ZooKeeper group
+  group:
+    name: zookeeper
+    system: yes
+
+- name: Create ZooKeeper user
+  user:
+    name: zookeeper
+    group: zookeeper
+    system: yes
+
+- name: Unarchive tarball
+  tags: bootstrap
+  unarchive:
+    src: "{{zookeeper_tarball_dir}}/zookeeper-{{zookeeper_version}}.tar.gz"
+    dest: "{{zookeeper_dir}}/"
+    owner: zookeeper
+    group: zookeeper
+    creates: "{{zookeeper_dir}}/bin"
+    remote_src: yes
+    extra_opts:
+    - --strip-components=1
+
+- name: Change ownership on ZooKeeper directory
+  tags: bootstrap
+  file:
+    path: "{{zookeeper_dir}}"
+    state: directory
+    owner: zookeeper
+    group: zookeeper
+
+- name: Create ZooKeeper directories
+  tags: bootstrap
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: zookeeper
+    group: zookeeper
+  with_items:
+    - "{{ zookeeper_data_dir }}"
+    - "{{ zookeeper_log_dir }}"
+    - "{{ zookeeper_conf_dir }}"
+
+- name: Write myid file
+  tags: deploy
+  template:
+    src: myid.j2
+    dest: "{{zookeeper_data_dir}}/myid"
+    owner: zookeeper
+    group: zookeeper
+    force: yes
+  notify:
+    - Restart zookeeper
+
+- name: Configure ZooKeeper zoo.cfg
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zookeeper_conf_dir }}/zoo.cfg"
+    owner: zookeeper
+    group: zookeeper
+  tags: deploy
+  notify:
+    - Restart zookeeper
+
+- name: Create ZooKeeper SystemD unit configuration
+  template:
+    src: zookeeper.service.j2
+    dest: /etc/systemd/system/zookeeper.service
+  notify: Restart zookeeper
+
+- name: Update the log4j config with saner production values
+  template:
+    src: log4j.properties.j2
+    dest: "{{ zookeeper_conf_dir }}/log4j.properties"
+    owner: zookeeper
+    group: zookeeper
+  tags: deploy
+  notify:
+    - Restart zookeeper
+
+- name: Enable ZooKeeper service
+  service:
+    name: zookeeper
+    enabled: yes
+  tags: deploy

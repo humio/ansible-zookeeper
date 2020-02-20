@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  author: Joel Watson
+  description: Ansible Zookeeper Role
+  company: Humio
+  license: MIT
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: EL
+    versions:
+     - 7
+  - name: Ubuntu
+    versions:
+      - xenial
+      - bionic
+
+  categories:
+  - platform
+
+  galaxy_tags:
+    - zookeeper
+    - distributed synchronization
+    - distributed hierarchical key-value store
+    - synchronization service
+    - humio
+
+dependencies:
+  - role: humio.java
+    version: 0.2.0
