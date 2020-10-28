@@ -27,8 +27,8 @@ Role Variables
 
 ```yaml
 ---
-zookeeper_version: 3.4.12
-zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{zookeeper_version}}/zookeeper-{{zookeeper_version}}.tar.gz
+zookeeper_version: 3.5.1
+zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz
 
 client_port: 2181
 init_limit: 5
@@ -38,6 +38,9 @@ zookeeper_autopurge_purgeInterval: 0
 zookeeper_autopurge_snapRetainCount: 10
 zookeeper_cluster_ports: "2888:3888"
 zookeeper_max_client_connections: 60
+
+zookeeper_admin_server: false
+zookeeper_admin_server_port: 8081
 
 zookeeper_data_dir: /var/zookeeper
 zookeeper_log_dir: /var/log/zookeeper
