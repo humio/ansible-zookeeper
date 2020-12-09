@@ -11,7 +11,7 @@ autopurge.purgeInterval={{ zookeeper_autopurge_purgeInterval }}
 autopurge.snapRetainCount={{ zookeeper_autopurge_snapRetainCount }}
 {% endif %}
 
-{% if zookeeper_admin_server is true %}
+{% if zookeeper_admin_server is defined and zookeeper_admin_server is sameas true%}
 admin.enableServer=true
 {% else %}
 admin.enableServer=false
