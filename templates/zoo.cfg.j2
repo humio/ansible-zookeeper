@@ -1,5 +1,8 @@
 tickTime={{ tick_time }}
 dataDir={{ zookeeper_data_dir }}
+{% if zookeeper_data_log_dir != zookeeper_data_dir %}
+dataLogDir={{ zookeeper_data_log_dir }}
+{% endif %}
 clientPort={{ client_port }}
 initLimit={{ init_limit }}
 syncLimit={{ sync_limit }}
@@ -20,6 +23,12 @@ admin.enableServer=false
 admin.serverPort={{ zookeeper_admin_server_port }}
 {% endif %}
 
+{% if set_client_port_address is sameas true %}
+{% set my_host = zookeeper_hosts | selectattr('host', 'equalto', zookeeper_hosts_hostname) | first %}
+clientPortAddress = {{ my_host.ip | default(my_host.host) }}
+{% endif %}
+
+snapshot.trust.empty={{ snapshot_trust_empty | lower }}
 
 {% for server in zookeeper_hosts %}
 {% if server.host is defined %}

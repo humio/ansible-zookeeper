@@ -3,6 +3,7 @@ zookeeper_version: 3.4.14
 zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz
 
 client_port: 2181
+set_client_port_address: true
 init_limit: 5
 sync_limit: 2
 tick_time: 2000
@@ -14,10 +15,15 @@ zookeeper_max_client_connections: 60
 zookeeper_admin_server: false
 
 zookeeper_data_dir: /var/zookeeper
+zookeeper_data_log_dir: "{{ zookeeper_data_dir }}" # Zookeeper recommends you point this to a different device than the data dir
 zookeeper_log_dir: /var/log/zookeeper
 zookeeper_dir: /opt/zookeeper-{{ zookeeper_version }}
 zookeeper_conf_dir: "{{ zookeeper_dir }}/conf"
 zookeeper_tarball_dir: /opt/src
+
+#If upgrading from Zookeeper 3.4 to 3.5.6+, and Zookeeper fails to boot with the message "No snapshot found, but there are log entries"
+#set the property below to true and deploy Zookeeper using your playbook. Once Zookeeper is running again, reset the property to false and rerun the playbook.
+snapshot_trust_empty: false 
 
 # Rolling file appender setttings
 zookeeper_rolling_log_file_max_size: 10MB
