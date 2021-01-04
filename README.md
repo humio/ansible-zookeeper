@@ -25,35 +25,7 @@ Ansible version at least 2.4
 Role Variables
 --------------
 
-```yaml
----
-zookeeper_version: 3.5.1
-zookeeper_url: http://archive.apache.org/dist/zookeeper/zookeeper-{{ zookeeper_version }}/apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz
-
-client_port: 2181
-init_limit: 5
-sync_limit: 2
-tick_time: 2000
-zookeeper_autopurge_purgeInterval: 0
-zookeeper_autopurge_snapRetainCount: 10
-zookeeper_cluster_ports: "2888:3888"
-zookeeper_max_client_connections: 60
-
-zookeeper_admin_server: false
-zookeeper_admin_server_port: 8081
-
-zookeeper_data_dir: /var/zookeeper
-zookeeper_log_dir: /var/log/zookeeper
-zookeeper_dir: /opt/zookeeper-{{zookeeper_version}}
-zookeeper_conf_dir: "{{zookeeper_dir}}/conf"
-zookeeper_tarball_dir: /opt/src
-
-zookeeper_hosts_hostname: "{{inventory_hostname}}"
-# List of dict (i.e. {zookeeper_hosts:[{host:,id:},{host:,id:},...]})
-zookeeper_hosts:
-  - host: "{{zookeeper_hosts_hostname}}" # the machine running
-    id: 1
-```
+See the [defaults](https://github.com/humio/ansible-zookeeper/blob/master/defaults/main.yml)
 
 Example Playbook
 ----------------
