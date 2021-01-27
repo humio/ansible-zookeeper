@@ -116,7 +116,7 @@
   retries: 12
   delay: 5
   register: zkServerLoop
-  until: "zkServerLoop.stdout.find('Mode: leader') != -1 or zkServerLoop.stdout.find('Mode: follower') != -1"
+  until: "zkServerLoop.stdout.find('Mode: leader') != -1 or zkServerLoop.stdout.find('Mode: follower') != -1 or zkServerLoop.stdout.find('Mode: standalone') != -1"
   
 - name: Get zookeeper status
   shell: 
@@ -129,6 +129,8 @@
     msg: "The zookeeper cluster failed to reach quorum, the cluster had {{ leaderCount }} leaders, expected 1"
   vars: 
     leaderCount: "{{ ansible_play_hosts | map('extract', hostvars, 'zkStatus') | map(attribute='stdout') | select('search', '.*Mode: leader.*') | list | length }}"
-  when: (leaderCount | int) != 1
+    standAloneCount: "{{ ansible_play_hosts | map('extract', hostvars, 'zkStatus') | map(attribute='stdout') | select('search', '.*Mode: standalone.*') | list | length }}"
+  when: ((leaderCount | int) != 1) and
+        ((standAloneCount | int) != 1)
   delegate_to: localhost
   run_once: True
