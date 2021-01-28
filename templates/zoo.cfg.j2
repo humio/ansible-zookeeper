@@ -25,7 +25,7 @@ admin.serverPort={{ zookeeper_admin_server_port }}
 
 {% if set_client_port_address is sameas true %}
 {% set my_host = zookeeper_hosts | selectattr('host', 'equalto', zookeeper_hosts_hostname) | first %}
-clientPortAddress = {{ my_host.ip | default(my_host.host) }}
+clientPortAddress={{ my_host.ip | default(my_host.host) }}
 {% endif %}
 
 snapshot.trust.empty={{ snapshot_trust_empty | lower }}
