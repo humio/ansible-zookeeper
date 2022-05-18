@@ -12,6 +12,7 @@ Group=zookeeper
 ExecStart={{zookeeper_dir}}/bin/zkServer.sh start-foreground
 Restart=always
 RestartSec=3
+Environment="SERVER_JVMFLAGS=-Djava.rmi.server.useCodebaseOnly=true -Dcom.sun.jndi.ldap.object.trustURLCodebase=false -Dcom.sun.jndi.cosnaming.object.trustURLCodebase=false"
 
 TimeoutSec=300
 
