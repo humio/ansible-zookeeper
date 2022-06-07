@@ -34,3 +34,11 @@ zookeeper_hosts_hostname: "{{ inventory_hostname }}"
 zookeeper_hosts:
   - host: "{{ zookeeper_hosts_hostname }}" # the machine running
     id: 1
+
+
+# Skip the leader check, used for running against local only
+zookeeper_check_enabled: true
+
+# check zkStatus 20 times, delay 5 seconds between checks
+zookeeper_check_count: 20
+zookeeper_check_delay: 5

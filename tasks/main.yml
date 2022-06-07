@@ -108,29 +108,23 @@
     state: started
 
 - meta: flush_handlers #Ensure we restart if necessary before doing health checks
-    
-- name: Wait for zookeeper to be running
-  shell: 
-    chdir: "{{ zookeeper_dir }}/bin"
-    cmd: "bash zkServer.sh status"
-  retries: 12
-  delay: 5
-  register: zkServerLoop
-  until: "zkServerLoop.stdout.find('Mode: leader') != -1 or zkServerLoop.stdout.find('Mode: follower') != -1 or zkServerLoop.stdout.find('Mode: standalone') != -1"
-  
-- name: Get zookeeper status
-  shell: 
-    chdir: "{{ zookeeper_dir }}/bin"
-    cmd: "bash zkServer.sh status"
-  register: zkStatus
-  
-- name: Verify that there is exactly one leader
-  fail:
-    msg: "The zookeeper cluster failed to reach quorum, the cluster had {{ leaderCount }} leaders, expected 1"
-  vars: 
-    leaderCount: "{{ ansible_play_hosts | map('extract', hostvars, 'zkStatus') | map(attribute='stdout') | select('search', '.*Mode: leader.*') | list | length }}"
-    standAloneCount: "{{ ansible_play_hosts | map('extract', hostvars, 'zkStatus') | map(attribute='stdout') | select('search', '.*Mode: standalone.*') | list | length }}"
-  when: ((leaderCount | int) != 1) and
-        ((standAloneCount | int) != 1)
-  delegate_to: localhost
-  run_once: True
+
+# Check to see if zookeer reached quorum 
+# Skippable by setting zookeeper_check_enabled: false 
+- block: 
+    - name: Get zookeeper status and check leadership
+      shell: 
+        chdir: "{{ zookeeper_dir }}/bin"
+        cmd: "bash zkServer.sh status"
+      register: zookeeper_check_status
+    - name: Verify that there is exactly one leader
+      fail:
+        msg: "The zookeeper cluster failed to reach quorum, the cluster had {{ leaderCount }} leaders, expected 1"
+      vars: 
+        leader_count: "{{ ansible_play_hosts | map('extract', hostvars, 'zookeeper_status') | map(attribute='stdout') | select('search', '.*Mode: leader.*') | list | length }}"
+        stand_alone_count: "{{ ansible_play_hosts | map('extract', hostvars, 'zookeeper_status') | map(attribute='stdout') | select('search', '.*Mode: standalone.*') | list | length }}"
+      when: ((leader_count | int) != 1) and
+            ((stand_alone_count | int) != 1)
+      delegate_to: localhost
+      run_once: True
+  when: zookeeper_check_enabled == true
